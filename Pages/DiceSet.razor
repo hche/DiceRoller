@@ -1,0 +1,107 @@
+﻿@using DiceRoller.Models;
+
+
+<div class="container">
+    <nav class="navbar navbar-light bg-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <form class="form-inline">
+                    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" @onclick="toggleEditMode">@(editMode ? "Done" : "Edit")</button>
+                    @if (editMode)
+                    {
+                        <input type="range" name="diceselector" class="form-control form-control-range" min="4" max="20" step="2" list="dicelist" @bind-value="sides" @bind-value:event="oninput"/>
+
+                        <datalist id="dicelist">
+                            <option value="4"></option>
+                            <option value="6"></option>
+                            <option value="8"></option>
+                            <option value="10"></option>
+                            <option value="12"></option>
+                            <option value="20"></option>
+                        </datalist>
+                        @*<output name="selecteddice" or="diceselector">88</output>*@
+                        <span class="text-secondary">D@(sides)</span>
+                        <button class="btn btn-sm btn-outline-success mx-1" @onclick="addDice" type="button">Add</button>
+                    }
+                </form>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div class="row">
+        @foreach (var dice in dices)
+        {
+            <div class="col col-12 col-sm-12 col-md-6">
+                <div class="card" style="margin: 10px 0px 10px 0px">
+                    <div class="card-header">
+                        <span class="float-left">@dice.Name</span>
+                        @if (editMode)
+                        {
+                            <span class="float-right"><button type="button" class="btn-outline-danger" @onclick="@(e => doRemoveDice(dice))">X</button></span>
+                        }
+
+                    </div>
+
+
+                    <div class="card-body text-center">
+                        <strong class="text-lg-center">@(dice.Value > 0 ? dice.Value.ToString() : "-")</strong>
+                    </div>
+                    <div class="card-footer text-left">
+                        <small class="text-muted">previous roll: @(dice.PreviousValue > 0 ? dice.PreviousValue.ToString() : "-")</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (!editMode)
+    {
+        <div class="row">
+            <div class="col-12 text-center">
+                <button class="btn btn-primary btn-lg" @onclick="doRoll">Roll</button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    public int sides { get; set; }
+
+    bool editMode = false;
+
+    [Parameter]
+    public List<Dice> dices { get; set; } = new List<Dice>();
+
+    void doRoll()
+    {
+        foreach (var dice in dices)
+        {
+            dice.Roll();
+        }
+    }
+
+    void addDice()
+    {
+        Dice dice = new Dice(sides);
+        this.dices.Add(dice);
+    }
+
+    void toggleEditMode()
+    {
+        this.editMode = !this.editMode;
+    }
+
+    void doRemoveDice(Dice dice)
+    {
+        dices.Remove(dice);
+        this.editMode = false;
+    }
+
+    protected override void OnInitialized()
+    {
+        sides = 6;
+        addDice();
+        addDice();
+    }
+
+}
