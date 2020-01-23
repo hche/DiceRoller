@@ -13,14 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="docs\.nojekyll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="docs\.nojekyll">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <Compile Remove="docs\**" />
+    <Content Remove="docs\**" />
+    <EmbeddedResource Remove="docs\**" />
+    <None Remove="docs\**" />
   </ItemGroup>
 
   <ItemGroup>
