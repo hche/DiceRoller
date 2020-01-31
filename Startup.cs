@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using DiceRoller.Models;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,8 @@ namespace DiceRoller
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDataRepository, DataRepository>();
+            services.AddBlazoredLocalStorage();
+            services.AddSingleton<IDataRepository, DataRepositoryLocalStorage>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

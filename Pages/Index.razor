@@ -1,3 +1,38 @@
-﻿@page "/"
-<DiceRoller.Pages.DiceSet></DiceRoller.Pages.DiceSet>
+﻿@inject IDataRepository repository;
 
+@page "/"
+
+
+@if (diceSets.Any())
+{
+    foreach (var diceSet in diceSets)
+    {
+        <DiceRoller.Pages.DiceSet></DiceRoller.Pages.DiceSet>
+
+    }
+
+
+}
+else
+{
+    <i>Loading ...</i>
+}
+
+
+
+
+
+
+@code {
+
+    Dictionary<Guid, List<Dice>> diceSets = new Dictionary<Guid, List<Dice>>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        diceSets = await repository.getAllDiceSets();
+    }
+
+
+
+}
