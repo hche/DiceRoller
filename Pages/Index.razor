@@ -7,11 +7,8 @@
 {
     foreach (var diceSet in diceSets)
     {
-        <DiceRoller.Pages.DiceSet></DiceRoller.Pages.DiceSet>
-
+        <DiceRoller.Pages.DiceSet Id="@(diceSet.Key)" Dices="@(diceSet.Value)" OnChange="OnDiceSetChange"></DiceRoller.Pages.DiceSet>
     }
-
-
 }
 else
 {
@@ -19,20 +16,24 @@ else
 }
 
 
-
-
-
-
 @code {
 
     Dictionary<Guid, List<Dice>> diceSets = new Dictionary<Guid, List<Dice>>();
 
-
     protected override async Task OnInitializedAsync()
     {
         diceSets = await repository.getAllDiceSets();
+
+        if (!diceSets.Any())
+        {
+            await repository.addDiceSet(new List<Dice> { new Dice(6) });
+            diceSets = await repository.getAllDiceSets();
+        }
     }
 
-
+    protected async Task OnDiceSetChange(Guid id)
+    {
+        await repository.updateDiceSet(id, diceSets[id]);
+    }
 
 }

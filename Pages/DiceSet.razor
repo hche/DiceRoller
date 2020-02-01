@@ -30,7 +30,7 @@
     </nav>
 
     <div class="row">
-        @foreach (var dice in dices)
+        @foreach (var dice in Dices)
         {
             <div class="col col-12 col-sm-12 col-md-6">
                 <div class="card" style="margin: 10px 0px 10px 0px">
@@ -65,25 +65,26 @@
 </div>
 
 @code {
-    public int sides { get; set; }
-
-    bool editMode = false;
+    
+    [Parameter]
+    public Guid Id { get; set; }
 
     [Parameter]
-    public List<Dice> dices { get; set; } = new List<Dice>();
+    public List<Dice> Dices { get; set; } = new List<Dice>();
+    
+    [Parameter]
+    public EventCallback<Guid> OnChange { get; set; }
+
+    private int sides { get; set; }
+
+    private bool editMode = false;
 
     void doRoll()
     {
-        foreach (var dice in dices)
+        foreach (var dice in Dices)
         {
             dice.Roll();
         }
-    }
-
-    void addDice()
-    {
-        Dice dice = new Dice(sides);
-        this.dices.Add(dice);
     }
 
     void toggleEditMode()
@@ -91,17 +92,17 @@
         this.editMode = !this.editMode;
     }
 
+    void addDice()
+    {
+        Dice dice = new Dice(sides);
+        OnChange.InvokeAsync(Id);
+        this.Dices.Add(dice);
+    }
+        
     void doRemoveDice(Dice dice)
     {
-        dices.Remove(dice);
+        Dices.Remove(dice);
+        OnChange.InvokeAsync(Id);
         this.editMode = false;
     }
-
-    protected override void OnInitialized()
-    {
-        sides = 6;
-        addDice();
-        addDice();
-    }
-
 }
