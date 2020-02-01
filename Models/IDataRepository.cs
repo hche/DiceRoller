@@ -7,12 +7,12 @@ namespace DiceRoller.Models
 {
     interface IDataRepository
     {
-        public Task<Dictionary<Guid, List<Dice>>> getAllDiceSets();
+        public Task<Dictionary<string, List<Dice>>> getAllDiceSets();
 
-        public Task<Dictionary<Guid, List<Dice>>> removeDiceSet(Guid id);
+        public Task<Dictionary<string, List<Dice>>> removeDiceSet(string id);
 
-        public Task<Guid> addDiceSet(List<Dice> dices);
+        public Task<string> addDiceSet(List<Dice> dices);
 
-        public Task updateDiceSet(Guid id, List<Dice> dices);
+        public Task updateDiceSet(string id, List<Dice> dices);
     }
 }

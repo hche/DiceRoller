@@ -18,7 +18,7 @@ else
 
 @code {
 
-    Dictionary<Guid, List<Dice>> diceSets = new Dictionary<Guid, List<Dice>>();
+    Dictionary<string, List<Dice>> diceSets = new Dictionary<string, List<Dice>>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -26,12 +26,12 @@ else
 
         if (!diceSets.Any())
         {
-            await repository.addDiceSet(new List<Dice> { new Dice(6) });
+            await repository.addDiceSet(new List<Dice> { new Dice() { Sides = 6 } }); ;
             diceSets = await repository.getAllDiceSets();
         }
     }
 
-    protected async Task OnDiceSetChange(Guid id)
+    protected async Task OnDiceSetChange(string id)
     {
         await repository.updateDiceSet(id, diceSets[id]);
     }

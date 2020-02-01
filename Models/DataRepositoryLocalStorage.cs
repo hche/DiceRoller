@@ -10,7 +10,7 @@ namespace DiceRoller.Models
     {
 
         private const string STORAGE_KEY = "diceSetStore";
-        private Dictionary<Guid, List<Dice>> _diceSets = new Dictionary<Guid, List<Dice>>();
+        private Dictionary<string, List<Dice>> _diceSets = new Dictionary<string, List<Dice>>();
         private ILocalStorageService _localStorage;
 
         public DataRepositoryLocalStorage(ILocalStorageService localStorage)
@@ -18,17 +18,17 @@ namespace DiceRoller.Models
             _localStorage = localStorage;
         }
 
-        public async Task<Guid> addDiceSet(List<Dice> dices)
+        public async Task<string> addDiceSet(List<Dice> dices)
         {
             var sets = await loadSets();
-            Guid id = Guid.NewGuid();
+            string id = Guid.NewGuid().ToString();
             sets.Add(id, dices);
             await storeSets(sets);
             return id;
         }
 
 
-        public async Task updateDiceSet(Guid id, List<Dice> dices)
+        public async Task updateDiceSet(string id, List<Dice> dices)
         {
             var sets = await loadSets();
             var setsNew = sets.Where(s => s.Key != id).ToDictionary(kv => kv.Key, kv => kv.Value);
@@ -36,12 +36,12 @@ namespace DiceRoller.Models
             await storeSets(setsNew);
         }
 
-        public Task<Dictionary<Guid, List<Dice>>> getAllDiceSets()
+        public Task<Dictionary<string, List<Dice>>> getAllDiceSets()
         {
             return loadSets();
         }
 
-        public async Task<Dictionary<Guid, List<Dice>>> removeDiceSet(Guid id)
+        public async Task<Dictionary<string, List<Dice>>> removeDiceSet(string id)
         {
             var sets = await loadSets();
             if(!sets.Keys.Contains(id))
@@ -55,11 +55,11 @@ namespace DiceRoller.Models
         }
 
         
-        private async Task<Dictionary<Guid, List<Dice>>> loadSets()
+        private async Task<Dictionary<string, List<Dice>>> loadSets()
         {
             if (!_diceSets.Any())
             {
-                var storedSets = await _localStorage.GetItemAsync<Dictionary<Guid, List<Dice>>>(STORAGE_KEY);
+                var storedSets = await _localStorage.GetItemAsync<Dictionary<string, List<Dice>>>(STORAGE_KEY);
                 if (storedSets != null)
                 {
                     _diceSets = storedSets;
@@ -68,7 +68,7 @@ namespace DiceRoller.Models
 
             return _diceSets;
         }
-        private Task storeSets(Dictionary<Guid, List<Dice>> sets)
+        private Task storeSets(Dictionary<string, List<Dice>> sets)
         {
             _diceSets = sets;
             return _localStorage.SetItemAsync(STORAGE_KEY, sets);

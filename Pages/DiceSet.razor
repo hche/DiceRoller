@@ -1,6 +1,5 @@
 ﻿@using DiceRoller.Models;
 
-
 <div class="container">
     <nav class="navbar navbar-light bg-light">
         <ul class="navbar-nav">
@@ -9,7 +8,7 @@
                     <button type="button" class="btn btn-sm btn-outline-secondary mx-1" @onclick="toggleEditMode">@(editMode ? "Done" : "Edit")</button>
                     @if (editMode)
                     {
-                        <input type="range" name="diceselector" class="form-control form-control-range" min="4" max="20" step="2" list="dicelist" @bind-value="sides" @bind-value:event="oninput"/>
+                        <input type="range" name="diceselector" class="form-control form-control-range" min="4" max="20" step="2" list="dicelist" @bind-value="sides" @bind-value:event="oninput" />
 
                         <datalist id="dicelist">
                             <option value="4"></option>
@@ -26,7 +25,6 @@
                 </form>
             </li>
         </ul>
-
     </nav>
 
     <div class="row">
@@ -40,9 +38,7 @@
                         {
                             <span class="float-right"><button type="button" class="btn-outline-danger" @onclick="@(e => doRemoveDice(dice))">X</button></span>
                         }
-
                     </div>
-
 
                     <div class="card-body text-center">
                         <strong class="text-lg-center">@(dice.Value > 0 ? dice.Value.ToString() : "-")</strong>
@@ -65,15 +61,15 @@
 </div>
 
 @code {
-    
+
     [Parameter]
-    public Guid Id { get; set; }
+    public string Id { get; set; } = "";
 
     [Parameter]
     public List<Dice> Dices { get; set; } = new List<Dice>();
-    
+
     [Parameter]
-    public EventCallback<Guid> OnChange { get; set; }
+    public EventCallback<string> OnChange { get; set; }
 
     private int sides { get; set; }
 
@@ -88,17 +84,22 @@
     }
 
     void toggleEditMode()
+
     {
         this.editMode = !this.editMode;
     }
 
     void addDice()
     {
-        Dice dice = new Dice(sides);
+        Dice dice = new Dice()
+        {
+            Sides = sides
+        };
+
         OnChange.InvokeAsync(Id);
         this.Dices.Add(dice);
     }
-        
+
     void doRemoveDice(Dice dice)
     {
         Dices.Remove(dice);

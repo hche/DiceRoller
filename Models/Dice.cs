@@ -26,10 +26,9 @@ namespace DiceRoller.Models
 
         public string Name { get { return $"D{Sides}"; } }
 
-        public Dice(int sides)
+        public Dice()
         {
             Id = Guid.NewGuid();
-            Sides = sides;
         }
 
         public int Roll()
